@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: 화내줄께
-  version: 1.0.0
+  version: 0.0.1
 servers:
   - url: http://localhost:3000
     description: Local server
@@ -94,13 +94,45 @@ paths:
                       example: false
 
   /users/profile:
+    get:
+      tags:
+        - Users
+      summary: 내 프로필 조회
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 프로필 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: '123'
+                  profileImageUrl:
+                    type: string
+                    example: https://cdn.example.com/profiles/123/profile.png
+                  email:
+                    type: string
+                    example: user@example.com
+                  nickname:
+                    type: string
+                    example: 홍길동
+                  coin:
+                    type: integer
+                    example: 30
+                  dailyConversationCount:
+                    type: integer
+                    example: 0
     post:
       tags:
         - Users
       summary: 프로필 이미지 및 닉네임 변경
+      description: 프로필 이미지를 업로드하고 닉네임을 함께 변경
       security:
         - bearerAuth: []
-      description: 프로필 이미지를 업로드하고 닉네임을 함께 변경
       requestBody:
         required: true
         content:
@@ -129,7 +161,7 @@ paths:
                     example: '123'
                   profileImageUrl:
                     type: string
-                    example: ''
+                    example: https://cdn.example.com/profiles/123/profile.png
                   email:
                     type: string
                     example: user@example.com
@@ -266,3 +298,59 @@ paths:
                     imageUrl:
                       type: string
                       example: https://cdn.example.com/clothes/red_tshirt.png
+
+  /shop/purchase:
+    post:
+      tags:
+        - Shop
+      summary: 아이템 구매
+      description: 사용자의 코인을 차감하고 인벤토리에 아이템을 추가합니다.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                itemId:
+                  type: string
+                  example: cloth_001
+                  description: 구매하려는 아이템 ID
+      responses:
+        '200':
+          description: 구매 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 구매 완료되었습니다.
+                  coin:
+                    type: integer
+                    example: 20
+                    description: 구매 후 남은 코인 잔액
+                  inventoryItemId:
+                    type: string
+                    example: inv_789
+                    description: 새로 추가된 인벤토리 아이템 ID
+        '400':
+          description: 구매 실패
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: INSUFFICIENT_COIN
+                  message:
+                    type: string
+                    example: 코인이 부족합니다.
+        '401':
+          description: 인증 실패
+        '404':
+          description: 아이템을 찾을 수 없음
