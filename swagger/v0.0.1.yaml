@@ -1,0 +1,268 @@
+openapi: 3.0.0
+info:
+  title: 화내줄께
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Local server
+
+components:
+  securitySchemes:
+    bearerAuth: # 이 이름과
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+tags:
+  - name: Auth
+    description: 로그인 및 인증 관련 API
+  - name: Users
+    description: 사용자 정보 관련 API
+  - name: Chat
+    description: AI 대화 API
+  - name: Shop
+    description: 상점 관련 API
+
+paths:
+  /auth/kakao:
+    post:
+      tags:
+        - Auth
+      summary: 카카오 로그인
+      responses:
+        '200':
+          description: 로그인 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: jwt.access.token
+                  refreshToken:
+                    type: string
+                    example: jwt.refresh.token
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: '123'
+                      email:
+                        type: string
+                        example: user@example.com
+                      nickname:
+                        type: string
+                        example: 홍길동
+                      coin:
+                        type: integer
+                        example: 30
+                      dailyConversationCount:
+                        type: integer
+                        example: 0
+
+  /users/inventory:
+    get:
+      tags:
+        - Users
+      summary: 내 인벤토리 조회
+      security:
+        - bearerAuth: []
+      description: 사용자가 소유한 의상 목록을 반환합니다.
+      responses:
+        '200':
+          description: 성공
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: inv_789
+                    itemId:
+                      type: string
+                      example: cloth_001
+                    name:
+                      type: string
+                      example: 붉은 티셔츠
+                    equipped:
+                      type: boolean
+                      example: false
+
+  /users/profile:
+    post:
+      tags:
+        - Users
+      summary: 프로필 이미지 및 닉네임 변경
+      security:
+        - bearerAuth: []
+      description: 프로필 이미지를 업로드하고 닉네임을 함께 변경
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                nickname:
+                  type: string
+                  example: 새닉네임
+                  description: 변경할 닉네임
+                file:
+                  type: string
+                  format: binary
+                  description: 업로드할 이미지 파일 (jpg, png 등)
+      responses:
+        '200':
+          description: 수정 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: '123'
+                  profileImageUrl:
+                    type: string
+                    example: ''
+                  email:
+                    type: string
+                    example: user@example.com
+                  nickname:
+                    type: string
+                    example: 홍길동
+                  coin:
+                    type: integer
+                    example: 30
+                  dailyConversationCount:
+                    type: integer
+                    example: 0
+
+  /users/avatar/clothes:
+    post:
+      tags:
+        - Users
+      summary: 캐릭터 의상 착용
+      security:
+        - bearerAuth: []
+      description: 인벤토리의 아이템을 캐릭터에 착용시킵니다.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                inventoryItemIds:
+                  type: array
+                  items:
+                    type: string
+                  example: ['inv_789', 'inv_456', 'inv_123']
+      responses:
+        '200':
+          description: 착용 완료
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 착용 완료
+                  equippedItem:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: inv_789
+                      name:
+                        type: string
+                        example: 붉은 티셔츠
+
+  /chat:
+    post:
+      tags:
+        - Chat
+      summary: AI 대화
+      security:
+        - bearerAuth: []
+      description: >
+        AI와 대화를 진행.  
+        1일 최대 5회 무료 가능, 초과 시 코인 사용 또는 구매 필요.  
+        무료 횟수를 다 사용하면 대화 종료 시 10코인 지급.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 오늘 날씨 어때?
+                level:
+                  type: integer
+                  example: 3
+      responses:
+        '200':
+          description: 정상 대화 가능 시
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: string
+                    example: 오늘은 맑고 기온은 26도입니다.
+                  remainingFreeChats:
+                    type: integer
+                    example: 3
+        '429':
+          description: 무료 횟수 초과
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: FREE_CHAT_LIMIT_EXCEEDED
+                  message:
+                    type: string
+                    example: 오늘의 무료 대화 횟수를 모두 사용했습니다. 코인을 사용하거나 구매해주세요.
+
+  /shop/items:
+    get:
+      tags:
+        - Shop
+      summary: 상점 아이템 목록 조회
+      security:
+        - bearerAuth: []
+      description: 상점에 진열된 의상 목록을 가져옵니다.
+      responses:
+        '200':
+          description: 성공
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: cloth_001
+                    name:
+                      type: string
+                      example: 붉은 티셔츠
+                    priceCoin:
+                      type: integer
+                      example: 50
+                    imageUrl:
+                      type: string
+                      example: https://cdn.example.com/clothes/red_tshirt.png
