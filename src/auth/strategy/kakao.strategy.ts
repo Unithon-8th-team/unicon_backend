@@ -4,6 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-kakao';
 
 import { AuthService } from '../auth.service';
+import { UserService } from '../../user';
 
 type Profile = {
   id: string;
@@ -35,6 +36,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
   constructor(
     private readonly configService: ConfigService,
     private readonly authService: AuthService,
+    private readonly userService: UserService,
   ) {
     super({
       clientID: `${configService.get('KAKAO_JS_ID')}`,
@@ -46,25 +48,30 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     _refreshToken: string,
     profile: Profile,
   ): Promise<any> {
-    // profile에서 정보 추출
-    const userId = String(profile._json.id);
+    const userKakaoId = String(profile._json.id);
     const userName = profile.displayName;
     const userNickName = profile._json.properties.nickname;
     const provider = 'kakao';
 
-    // // user 정보 확인
-    // let user = await this.authService.validateUser(userId, provider);
+    let user = this.userService.isUserRegistered(userKakaoId);
 
-    // if (!user) {
-    //   user = await this.authService.create({
-    //     userId,
-    //     userName,
-    //     userNickName,
-    //     provider,
-    //   });
-    // }
+    if (!user) {
+      this.userService.addUser({
+        id: userKakaoId,
+        name: userName,
+        email: userKakaoId || '',
+        nickname: userNickName,
+      });
+    }
 
-    return this.generateTokens('user.userId', provider);
+    const { token, refreshToken } = this.generateTokens(userKakaoId, provider);
+
+    return {
+      token,
+      refreshToken,
+      isProfileComplete: this.userService.isUserSettingCompleted(userKakaoId),
+      userId: userKakaoId,
+    };
   }
 
   private generateTokens(userId: string, provider: string) {

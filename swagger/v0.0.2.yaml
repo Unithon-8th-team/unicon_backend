@@ -52,6 +52,57 @@ paths:
                     example: true
                     description: isProfileComplete가 false면 추가 프로필 입력 필요
 
+  /users/{userId}/settings:
+    post:
+      tags:
+        - Users
+      summary: 유저 프로필값 초기 셋팅
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          required: true
+          name: userId
+          schema:
+            type: integer
+          description: Numeric ID of the user to get
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                nickname:
+                  type: string
+                  example: 새닉네임
+                  description: 변경할 닉네임
+                birthDate:
+                  type: string
+                  example: YYYY-MM-DD
+                  description: YYYY-MM-DD 형식의 생년월일
+                sex:
+                  type: string
+                  description: 성별 (M-남성, F-여성, N-선택 안함/기타)
+
+      responses:
+        '200':
+          description: 수정 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: '123'
+                  email:
+                    type: string
+                    example: user@example.com
+                  nickname:
+                    type: string
+                    example: 홍길동
+
   /users/{userId}/profile:
     get:
       tags:
