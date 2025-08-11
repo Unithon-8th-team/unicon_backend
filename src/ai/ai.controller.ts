@@ -16,8 +16,8 @@ export class AiController {
   @Post(':userId/generate-image-code')
   async generateImage(
     @Param('userId') userId,
-    @Body() chattingRequestDto: ChattingRequestDto,
+    @Body() body: { message: string },
   ) {
-    return await this.aiService.generateImageCode();
+    return await this.aiService.findClosestImages(body.message);
   }
 }
