@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-// import { UserService, CreateUserDto, UserEntity } from '../user';
 import { ConfigService } from '@nestjs/config';
 
 type JwtPayload = {
@@ -14,19 +13,7 @@ export class AuthService {
   constructor(
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
-    // private readonly userService: UserService,
   ) {}
-
-  // async validateUser(
-  //   userId: string,
-  //   provider: string,
-  // ): Promise<UserEntity | null> {
-  // return await this.userService.findUserById(userId, provider);
-  // }
-
-  // async create(userData: CreateUserDto) {
-  // return await this.userService.create(userData);
-  // }
 
   // Access Token 발급
   generateAccessToken(payload: JwtPayload): string {

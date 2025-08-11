@@ -52,9 +52,8 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     const userNickName = profile._json.properties.nickname;
     const provider = 'kakao';
 
-    // // user 정보 확인
+    // // user 정보 확인 (현재는 주석 처리)
     // let user = await this.authService.validateUser(userId, provider);
-
     // if (!user) {
     //   user = await this.authService.create({
     //     userId,
