@@ -98,8 +98,8 @@ export class AiService {
   private async getTextEmbedding(text: string): Promise<number[]> {
     return new Promise((resolve, reject) => {
       const scriptPath = path.join(process.cwd(), 'text_embedding.py');
-      const pyPath = '/Users/belle/uniton/unicon_backend/venv/bin/python';
-      const pyProcess = cp.spawn(pyPath, [scriptPath, text]);
+      const pythonPath = path.join(__dirname, '../../venv/bin/python');
+      const pyProcess = cp.spawn(pythonPath, [scriptPath, text]);
 
       let result = '';
       pyProcess.stdout.on('data', (data) => {
