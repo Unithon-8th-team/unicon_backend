@@ -1,15 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { SettingRequestDto } from './dto';
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  nickname: string;
-  profileImage?: string;
-  birthdate?: string;
-  sex?: string;
-}
+import { SettingRequestDto, User } from './dto';
 
 @Injectable()
 export class UserService {
@@ -55,14 +45,19 @@ export class UserService {
     return this.users.find((user) => user.id === id);
   }
 
+  getUserUsage(id: string) {
+    return this.users.find((user) => user.id === id);
+  }
+
   /**
    * 유저 추가 (테스트용)
    * @param user 유저 객체
    */
   addUser(user: User): void {
+    const newUser = new User({ ...user });
     if (this.isUserRegistered(user.email)) {
       throw new Error(`User with email ${user.email} already exists`);
     }
-    this.users.push(user);
+    this.users.push(newUser);
   }
 }
