@@ -18,9 +18,4 @@ export class UserController {
   ) {
     return this.userService.settingUserProfile(userId, settingDto);
   }
-
-  // @Get(':userId/usage')
-  // public getUserUsage(@Param('userId') userId) {
-  //   return this.userService.getUserById(userId);
-  // }
 }
