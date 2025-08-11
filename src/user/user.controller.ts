@@ -7,8 +7,12 @@ import { SettingRequestDto } from './dto';
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-  @Get(':userId')
-  public getUserInfo() {}
+  @Get(':userId/profile')
+  public getUserInfo(
+    @common.AuthenticatedUser() user: common.AccessTokenPayloads,
+  ) {
+    return this.userService.getUserById(user.userId);
+  }
 
   @Post(':userId/settings')
   public getUserSettings(

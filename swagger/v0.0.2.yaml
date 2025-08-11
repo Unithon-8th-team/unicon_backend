@@ -137,12 +137,6 @@ paths:
                   nickname:
                     type: string
                     example: 홍길동
-                  coin:
-                    type: integer
-                    example: 30
-                  dailyConversationCount:
-                    type: integer
-                    example: 0
                   birthDate:
                     type: string
                     example: YYYY-MM-DD
@@ -207,12 +201,6 @@ paths:
                   nickname:
                     type: string
                     example: 홍길동
-                  coin:
-                    type: integer
-                    example: 30
-                  dailyConversationCount:
-                    type: integer
-                    example: 0
 
   /users/{userId}/avatar/clothes:
     post:
