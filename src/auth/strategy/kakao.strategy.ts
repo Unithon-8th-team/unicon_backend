@@ -38,7 +38,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
   ) {
     super({
       clientID: `${configService.get('KAKAO_JS_ID')}`,
-      callbackURL: '/auth/kakao/callback',
+      callbackURL: 'http://10.0.2.2:3000/auth/kakao/callback',
     });
   }
   async validate(
@@ -64,7 +64,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     //   });
     // }
 
-    return this.generateTokens('user.userId', provider);
+    return this.generateTokens(userId, provider);
   }
 
   private generateTokens(userId: string, provider: string) {
