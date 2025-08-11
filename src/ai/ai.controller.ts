@@ -5,11 +5,19 @@ import { ChattingRequestDto } from './dto';
 @Controller('ai')
 export class AiController {
   constructor(private readonly aiService: AiService) {}
-  @Post('/chat/:userId')
+  @Post(':userId/chat')
   async getChatting(
     @Param('userId') userId,
     @Body() chattingRequestDto: ChattingRequestDto,
   ): Promise<string> {
     return await this.aiService.generateAngrySentence(chattingRequestDto);
+  }
+
+  @Post(':userId/generate-image-code')
+  async generateImage(
+    @Param('userId') userId,
+    @Body() chattingRequestDto: ChattingRequestDto,
+  ) {
+    return await this.aiService.generateImageCode();
   }
 }

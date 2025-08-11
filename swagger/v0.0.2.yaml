@@ -252,7 +252,7 @@ paths:
                         type: string
                         example: 붉은 티셔츠
 
-  /ai/chat:
+  /ai/{userId}/chat:
     post:
       tags:
         - AI
@@ -307,7 +307,7 @@ paths:
                     type: string
                     example: 오늘의 무료 대화 횟수를 모두 사용했습니다. 코인을 사용하거나 구매해주세요.
 
-  /ai/generate-image:
+  /ai/{userId}/generate-image:
     post:
       summary: 이미지 생성
       description: 사용자가 입력한 텍스트 설명을 바탕으로 AI가 여러 이미지를 생성하여 URL 배열을 반환합니다.
