@@ -47,8 +47,8 @@ export class AiService {
     사용자의 말: "${request.message}"  
     이전 대화: "${previousMessages}"
 
-    위 상황과 감정 단계를 고려하여,  
-    사용자의 말에 대답해주면서 AI가 1~2문장으로 자연스럽고 단계에 맞게 같이 화내는 문장을 만들어주세요.
+    이전 대화 맥락과 현재의 상황과 감정 단계를 고려하여,  
+    사용자의 말에 대답해주면서 AI가 1~2문장으로 자연스럽고 단계에 맞게 문장을 만들어주세요.
     `;
 
     this.messages.push(request.message);
